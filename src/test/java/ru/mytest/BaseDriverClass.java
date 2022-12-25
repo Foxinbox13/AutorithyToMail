@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseDriverClass {
 
-    protected static WebDriver driver;
+    protected WebDriver driver;
     WebDriverWait wait;
     //порт для запуска на локальной машине
     //protected String ggUrl = "http://localhost:4445";
