@@ -16,10 +16,9 @@ import java.util.concurrent.TimeUnit;
 public class BaseDriverClass {
 
     protected WebDriver driver;
-    WebDriverWait wait;
     //порт для запуска на локальной машине
-    //protected String ggUrl = "http://localhost:4445";
-    protected String ggUrl = "https://mail.ru/";
+    protected String ggUrl = "http://localhost:4445";
+    //protected String ggUrl = "https://mail.ru/";
 
     @Rule
     public TestWatcher watcher;
@@ -32,8 +31,8 @@ public class BaseDriverClass {
                 URL hub = null;
 
                 try {
-                    //hub = new URL(ggUrl + "/wd/hub");
-                    hub = new URL(ggUrl);
+                    hub = new URL(ggUrl + "/wd/hub");
+                    //hub = new URL(ggUrl);
                     //If something does not work, you can easily check that Selenoid is running with opening status url:
                     //hub = new URL(ggUrl + "/status");
                 } catch (MalformedURLException e) {
@@ -41,7 +40,6 @@ public class BaseDriverClass {
                 }
 
                 driver = new RemoteWebDriver(hub, chrome);
-                driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 
             }
 
