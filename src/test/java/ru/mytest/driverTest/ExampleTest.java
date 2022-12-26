@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class ExampleTest extends BaseDriverClass {
 
     @Test
-    public void BaseTest() {
+    public void baseTest() {
         driver.get("https://mail.ru/");
         LoginMailPageObject kkk = new LoginMailPageObject(driver);
         //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
