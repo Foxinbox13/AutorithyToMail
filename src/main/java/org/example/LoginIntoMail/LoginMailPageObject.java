@@ -27,7 +27,7 @@ public class LoginMailPageObject extends Base {
     @FindBy(xpath = ".//*[@class = 'base-0-2-25 h3-0-2-29']")
     private WebElement enterMenu;
 
-    @FindBy(xpath = ".//*[@placeholder = 'Имя аккаунта']")
+    @FindBy(xpath = ".//*[@class = 'base-0-2-57']")
     private WebElement userLoginLocator;
 
     @FindBy(xpath = ".//button[@class= 'base-0-2-79 primary-0-2-93']")
@@ -52,6 +52,7 @@ public class LoginMailPageObject extends Base {
      * метод ввода логина и пароля в окне авторизации
      */
     public void inputLogin(String login) {
+
         setText(userLoginLocator, login);
 
     }
