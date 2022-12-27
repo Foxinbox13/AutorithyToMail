@@ -8,6 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.*;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class LoginMailPageObject extends Base {
@@ -22,13 +23,24 @@ public class LoginMailPageObject extends Base {
 
     }
 
+
+
     @FindBy(xpath = ".//*[@class = 'ph-login svelte-1hiqrvn']")
     private WebElement enterButtonLogin;
+
     @FindBy(xpath = ".//*[@class = 'base-0-2-25 h3-0-2-29']")
     private WebElement enterMenu;
 
-    @FindBy(xpath = ".//*[@class = 'base-0-2-57']")
+
+    @FindBy(xpath = "//iframe[@class='iframe-0-2-16']")
+    private WebElement frameAuth;
+
+
+
+    @FindBy(xpath = ".//*[@class = 'input-0-2-77']")
     private WebElement userLoginLocator;
+
+
 
     @FindBy(xpath = ".//button[@class= 'base-0-2-79 primary-0-2-93']")
     private WebElement nextButton;
@@ -45,6 +57,17 @@ public class LoginMailPageObject extends Base {
     public void pressEnter() {
         if (waitVisibilityOfElement(enterButtonLogin)) {
             click(enterButtonLogin);
+        }
+    }
+
+    /**
+    еще один фрейм,а чего нет то
+     */
+
+
+    public void frameSearch () {
+        if (waitVisibilityOfElement(frameAuth)) {
+            click(frameAuth);
         }
     }
 

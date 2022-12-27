@@ -10,15 +10,19 @@ public class ExampleTest extends BaseDriverClass {
 
     @Test
     public void baseTest() {
-        driver.get("https://mail.ru/");
-        LoginMailPageObject kkk = new LoginMailPageObject(driver);
+       // driver.get("https://mail.ru/");
+        driver.get("https://account.mail.ru/login/");
+        LoginMailPageObject mailRu = new LoginMailPageObject(driver);
         //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         System.out.println("driver is " + driver);
-        kkk.pressEnter();
-        kkk.inputLogin("dollar_region");
-        kkk.pressGoToPass();
-        kkk.inputPass("flow_master");
-        kkk.loginAfterAll();
+        //mailRu.pressEnter();
+
+        //mailRu.frameSearch();
+
+        mailRu.inputLogin("dollar_region");
+        mailRu.pressGoToPass();
+        mailRu.inputPass("flow_master");
+        mailRu.loginAfterAll();
 
     }
 
