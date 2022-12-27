@@ -1,5 +1,6 @@
 package org.example.LoginIntoMail;
 
+import dev.failsafe.internal.util.Assert;
 import org.example.Base;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -24,7 +25,6 @@ public class LoginMailPageObject extends Base {
     }
 
 
-
     @FindBy(xpath = ".//*[@class = 'ph-login svelte-1hiqrvn']")
     private WebElement enterButtonLogin;
 
@@ -36,19 +36,54 @@ public class LoginMailPageObject extends Base {
     private WebElement frameAuth;
 
 
-
+    /**
+     * поиск локатора для поля ввода логина
+     **/
     @FindBy(xpath = ".//*[@class = 'input-0-2-77']")
     private WebElement userLoginLocator;
 
 
-
-    @FindBy(xpath = ".//button[@class= 'base-0-2-79 primary-0-2-93']")
+    @FindBy(xpath = ".//button[@class= 'base-0-2-87 primary-0-2-101 auto-0-2-113']")
     private WebElement nextButton;
 
+    /**
+     * поиск локатора для поля ввода пароля
+     **/
     @FindBy(xpath = ".//input[@name= 'password']")
     private WebElement userPassLocator;
-    @FindBy(xpath = ".//button[@class= 'base-0-2-79 primary-0-2-93']")
+
+    /**
+     * кнопка авторизации уже псле ввода логина и пароля
+     */
+    @FindBy(xpath = "*//button[@class = 'base-0-2-79 primary-0-2-93']")
     private WebElement authButtonLogin;
+
+    /**
+     * кнопка для написания письма
+     */
+    @FindBy(xpath = ".//a[@class= 'base-0-2-257 primary-0-2-271 auto-0-2-283']")
+    private WebElement letterCreateButton;
+
+    /*** определяем локатор модалки письма      */
+    @FindBy(xpath = ".//div[@class= 'container--rp3CE']")
+    private WebElement letterWindow;
+
+    /*** поле для ввода "Кому" в письме      */
+    @FindBy(xpath = ".//div[@class= 'input--3slxg']")
+    private WebElement letterTo;
+
+    /*** поле для ввода "Тема" в письме      */
+    @FindBy(xpath = ".//div[@class= 'inputContainer--nsqFu']")
+    private WebElement letterThemes;
+
+    /*** поле для ввода тела письма      */
+    @FindBy(xpath = ".//*[@class= 'editable-llke cke_editable cke_editable_inline cke_contents_true cke_show_borders']")
+    private WebElement letterBody;
+
+    /*** кнопка отправки письма      */
+    @FindBy(xpath = ".//button[@class= 'vkuiButton vkuiButton--size-l vkuiButton--mode-primary vkuiButton--appearance-accent vkuiButton--align-center vkuiButton--sizeY-none vkuiButton--android vkuiTappable vkuiTappable--sizeX-none vkuiTappable--hover-none vkuiTappable--hasActive vkuiTappable--mouse']")
+    private WebElement letterSend;
+
 
 
     /**
@@ -60,26 +95,12 @@ public class LoginMailPageObject extends Base {
         }
     }
 
-    /**
-    еще один фрейм,а чего нет то
-     */
-
-
-    public void frameSearch () {
-        if (waitVisibilityOfElement(frameAuth)) {
-            click(frameAuth);
-        }
-    }
-
-    /**
-     * метод ввода логина и пароля в окне авторизации
-     */
+    /**  метод ввода логина в окне авторизации */
     public void inputLogin(String login) {
-
         setText(userLoginLocator, login);
-
     }
 
+    /**  метод ввода пароля в окне авторизации */
     public void inputPass(String password) {
         if (waitVisibilityOfElement(userPassLocator)) {
             click(userPassLocator);
@@ -87,23 +108,43 @@ public class LoginMailPageObject extends Base {
         }
     }
 
-        /**
-         * переход ко вводу пароля
-         */
-
-
-        public void pressGoToPass(){
-            if (waitVisibilityOfElement(nextButton)) {
-                click(nextButton);
-            }
-
+    /** переход ко вводу пароля после указания логина */
+    public void pressGoToPass() {
+        if (waitVisibilityOfElement(nextButton)) {
+            click(nextButton);
         }
-
-        public void loginAfterAll() {
-            if (waitVisibilityOfElement(authButtonLogin)) {
-                click(authButtonLogin);
-            }
-            authButtonLogin.click();
-        }
-
     }
+
+    /** вход после ввода логина и пароля */
+    public void loginAfterAll() {
+        if (waitVisibilityOfElement(authButtonLogin)) {
+            click(authButtonLogin);
+        }
+    }
+
+    /** начинаем писать письмо */
+    public void letterCreate(){
+            click(letterCreateButton);
+    }
+    /** начинаем писать письмо */
+    public void fillLetter(String receiver, String thema){
+        if (waitVisibilityOfElement(letterTo)&waitVisibilityOfElement(letterThemes)) {
+           // if (letterTo == null & letterThemes  == null){
+                System.out.println("Открыта модалка нового письма");
+                setText(letterTo, receiver);
+                setText(letterThemes, thema);
+            } else System.out.println("Открыто точно не новое письмо");
+
+        }
+
+
+
+    public void checkTitleV2(final String title) {
+        String xpath = ".//h1[contains(., '" + title + "')]";
+        WebElement check = getDriver().findElement(By.xpath(xpath));
+        final String message = "Заголовок реестра: " + title;
+        final boolean b = waitVisibilityOfElement(check);
+        //c.assertTrue(message, b);
+    }
+
+}

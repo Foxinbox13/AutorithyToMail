@@ -21,6 +21,16 @@ public class Base {
 
     }
 
+    /**
+     * Получить экземпляр драйвера.
+     *
+     * @return
+     */
+    public WebDriver getDriver() {
+        return driver;
+    }
+
+
     public int getDriverWaitTime() {
         int waitTime = 60;
         String drWt = System.getProperty("DriverWaitTime");
@@ -81,5 +91,6 @@ public class Base {
         webElement.sendKeys(string);
         //   switchToDefaultFrame();
     }
+
 
 }
