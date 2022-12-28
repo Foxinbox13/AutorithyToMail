@@ -1,6 +1,7 @@
 package org.example.LoginIntoMail;
 
 import org.example.Base;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -84,6 +85,14 @@ public class LoginMailPageObject extends Base {
     @FindBy(xpath = ".//a[@title= 'Входящие']")
     private WebElement incomingMail;
 
+    /** Раскрытие "Письма себе" */
+    @FindBy(xpath = "//div[@class ='ReactVirtualized__Grid__innerScrollContainer']/div[4]")
+    private WebElement incomingMailForSelf;
+
+    /** Локатор полученного письма */
+    @FindBy(xpath = "//*[text()[contains(.,'Тестовое письмо')]]")
+    private WebElement incomingMailSended;
+
 
 
 
@@ -129,9 +138,8 @@ public class LoginMailPageObject extends Base {
     }
     /** начинаем писать письмо */
     public void fillLetterAndSend (String receiver, String thema) {
+       //проверяем, что перед нами окно с нужными полями
         if (waitVisibilityOfElement(letterTo) & waitVisibilityOfElement(letterThemes)) {
-
-            //driver.findElement(letterTo).getAttribute("value").compareTo("");
             if (letterTo.getAttribute("value") == "") {
                 System.out.println("Открыта модалка нового письма");
                 setText(letterTo, receiver);
@@ -140,16 +148,26 @@ public class LoginMailPageObject extends Base {
                 setText(letterBody, "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!");
                 click(letterSend);
             } else System.out.println("Открыто точно не новое письмо");
+        }
+    }
+
+    /** переходим в каталог входящей почты и проверяем наличие письма */
+    public void openIncomingMail(String thema){
+        if (waitVisibilityOfElement(incomingMail)&waitVisibilityOfElement(letterCreateButton)) {
+           // click(incomingMail);
+        }
+        if (waitVisibilityOfElement(incomingMailForSelf)) {
+            click(incomingMailForSelf);
+        }
+
+        if (incomingMailSended.getText() == thema) {
+            click(driver.findElement(By.xpath("//*[text()[contains(.,'" +thema + "')]]")));
 
         }
     }
 
-    /** начинаем писать письмо */
-    public void openIncomingMail(){
-        if (waitVisibilityOfElement(incomingMail)) {
-            click(incomingMail);
-        }
-    }
+
+
 
 
 }
