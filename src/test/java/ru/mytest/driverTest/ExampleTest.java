@@ -4,9 +4,7 @@ import org.example.LoginIntoMail.LoginMailPageObject;
 import org.junit.Test;
 import ru.mytest.BaseDriverClass;
 
-import java.util.concurrent.TimeUnit;
-
-public class ExampleTest extends BaseDriverClass {
+public class ExampleTest extends  BaseDriverClass{
 
     @Test
     public void baseTest() {

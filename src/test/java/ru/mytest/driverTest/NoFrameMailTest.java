@@ -17,7 +17,7 @@ public class NoFrameMailTest extends BaseDriverClass {
         neweMail.inputPass("flow_master"); //вводим пароль
         neweMail.loginAfterAll();             //авторизация по итогу
         neweMail.letterCreate();
-        neweMail.fillLetter("dollar_region@mail.ru", "Тестовое письмо" + Math.random());
-
+        neweMail.fillLetterAndSend("dollar_region@mail.ru", "Тестовое письмо" + Math.random());
+        System.out.println("Тест завершён.");
     }
 }

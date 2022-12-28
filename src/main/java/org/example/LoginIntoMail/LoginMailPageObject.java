@@ -1,16 +1,10 @@
 package org.example.LoginIntoMail;
 
-import dev.failsafe.internal.util.Assert;
 import org.example.Base;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.*;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class LoginMailPageObject extends Base {
     public WebDriver driver;
@@ -55,13 +49,13 @@ public class LoginMailPageObject extends Base {
     /**
      * кнопка авторизации уже псле ввода логина и пароля
      */
-    @FindBy(xpath = "*//button[@class = 'base-0-2-79 primary-0-2-93']")
+    @FindBy(xpath = "*//button[@class = 'base-0-2-87 primary-0-2-101 auto-0-2-113']")
     private WebElement authButtonLogin;
 
     /**
      * кнопка для написания письма
      */
-    @FindBy(xpath = ".//a[@class= 'base-0-2-257 primary-0-2-271 auto-0-2-283']")
+    @FindBy(xpath = "*//span[@class = 'compose-button__wrapper']")
     private WebElement letterCreateButton;
 
     /*** определяем локатор модалки письма      */
@@ -69,20 +63,27 @@ public class LoginMailPageObject extends Base {
     private WebElement letterWindow;
 
     /*** поле для ввода "Кому" в письме      */
-    @FindBy(xpath = ".//div[@class= 'input--3slxg']")
+    @FindBy(xpath = ".//label[@class = 'container--zU301']//input[@class= 'container--H9L5q size_s--3_M-_']")
     private WebElement letterTo;
 
     /*** поле для ввода "Тема" в письме      */
-    @FindBy(xpath = ".//div[@class= 'inputContainer--nsqFu']")
+    @FindBy(xpath = "//div[@class ='subject__container--HWnat']//input[@class = 'container--H9L5q size_s--3_M-_']")
     private WebElement letterThemes;
 
     /*** поле для ввода тела письма      */
-    @FindBy(xpath = ".//*[@class= 'editable-llke cke_editable cke_editable_inline cke_contents_true cke_show_borders']")
+    @FindBy(xpath = "//div[@role= 'textbox']/div[1]")
     private WebElement letterBody;
 
     /*** кнопка отправки письма      */
     @FindBy(xpath = ".//button[@class= 'vkuiButton vkuiButton--size-l vkuiButton--mode-primary vkuiButton--appearance-accent vkuiButton--align-center vkuiButton--sizeY-none vkuiButton--android vkuiTappable vkuiTappable--sizeX-none vkuiTappable--hover-none vkuiTappable--hasActive vkuiTappable--mouse']")
     private WebElement letterSend;
+
+    /**
+     * Кнопка "Входящие"
+     */
+    @FindBy(xpath = ".//a[@title= 'Входящие']")
+    private WebElement incomingMail;
+
 
 
 
@@ -127,24 +128,28 @@ public class LoginMailPageObject extends Base {
             click(letterCreateButton);
     }
     /** начинаем писать письмо */
-    public void fillLetter(String receiver, String thema){
-        if (waitVisibilityOfElement(letterTo)&waitVisibilityOfElement(letterThemes)) {
-           // if (letterTo == null & letterThemes  == null){
+    public void fillLetterAndSend (String receiver, String thema) {
+        if (waitVisibilityOfElement(letterTo) & waitVisibilityOfElement(letterThemes)) {
+
+            //driver.findElement(letterTo).getAttribute("value").compareTo("");
+            if (letterTo.getAttribute("value") == "") {
                 System.out.println("Открыта модалка нового письма");
                 setText(letterTo, receiver);
                 setText(letterThemes, thema);
+                click(letterBody);
+                setText(letterBody, "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!");
+                click(letterSend);
             } else System.out.println("Открыто точно не новое письмо");
 
         }
-
-
-
-    public void checkTitleV2(final String title) {
-        String xpath = ".//h1[contains(., '" + title + "')]";
-        WebElement check = getDriver().findElement(By.xpath(xpath));
-        final String message = "Заголовок реестра: " + title;
-        final boolean b = waitVisibilityOfElement(check);
-        //c.assertTrue(message, b);
     }
+
+    /** начинаем писать письмо */
+    public void openIncomingMail(){
+        if (waitVisibilityOfElement(incomingMail)) {
+            click(incomingMail);
+        }
+    }
+
 
 }
