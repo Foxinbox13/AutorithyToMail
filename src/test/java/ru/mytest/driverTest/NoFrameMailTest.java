@@ -4,8 +4,6 @@ import org.example.LoginIntoMail.LoginMailPageObject;
 import org.junit.Test;
 import ru.mytest.BaseDriverClass;
 
-import java.util.Random;
-
 public class NoFrameMailTest extends BaseDriverClass {
 
 
@@ -22,7 +20,7 @@ public class NoFrameMailTest extends BaseDriverClass {
         neweMail.letterCreate();
         //int i = (int) (Math.random()*3); //целочисленное значение от 1 до 3
         neweMail.fillLetterAndSend("dollar_region@mail.ru", thema);
-        neweMail.openIncomingMail(thema);
+        neweMail.openIncomingMail(thema.toString());
 
         System.out.println("Тест завершён.");
     }

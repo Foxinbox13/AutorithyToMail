@@ -86,7 +86,7 @@ public class LoginMailPageObject extends Base {
     private WebElement incomingMail;
 
     /** Раскрытие "Письма себе" */
-    @FindBy(xpath = "//div[@class ='ReactVirtualized__Grid__innerScrollContainer']/div[4]")
+    @FindBy(xpath = "//span[co;ntains(text(),'Письма себе')]")
     private WebElement incomingMailForSelf;
 
     /** Локатор полученного письма */
@@ -156,14 +156,16 @@ public class LoginMailPageObject extends Base {
         if (waitVisibilityOfElement(incomingMail)&waitVisibilityOfElement(letterCreateButton)) {
            // click(incomingMail);
         }
-        if (waitVisibilityOfElement(incomingMailForSelf)) {
-            click(incomingMailForSelf);
-        }
+        //if (waitVisibilityOfElement(incomingMailForSelf)) {
+        //    click(incomingMailForSelf);
+        //}
 
-        if (incomingMailSended.getText() == thema) {
+        if (incomingMailSended. getText() == thema) {
             click(driver.findElement(By.xpath("//*[text()[contains(.,'" +thema + "')]]")));
+            System.out.println("успешно выбрано полученное письмо");
 
         }
+        System.out.println("Не получилось открыть полученное письмо");
     }
 
 
