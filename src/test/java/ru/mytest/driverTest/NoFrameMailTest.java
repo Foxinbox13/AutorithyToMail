@@ -1,27 +1,35 @@
 package ru.mytest.driverTest;
 
+import com.beust.jcommander.Parameter;
 import org.example.LoginIntoMail.LoginMailPageObject;
 import org.junit.Test;
 import ru.mytest.BaseDriverClass;
 
 public class NoFrameMailTest extends BaseDriverClass {
 
-
     @Test
     public void baseTest(){
+        String login = "dollar_region";
+        String password = "flow_master";
         String thema =  "Тестовое письмо" + Math.random();
+        String receiver = "dollar_region@mail.ru";
+        String letterInput = "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!";
+
         driver.get("https://account.mail.ru/login/");
-        LoginMailPageObject neweMail = new LoginMailPageObject(driver);
+        LoginMailPageObject newMail = new LoginMailPageObject(driver);
 
-        neweMail.inputLogin("dollar_region"); //вводим логин
-        neweMail.pressGoToPass();             // переходим к вводу пароля
-        neweMail.inputPass("flow_master"); //вводим пароль
-        neweMail.loginAfterAll();             //авторизация по итогу
-        neweMail.letterCreate();
-        //int i = (int) (Math.random()*3); //целочисленное значение от 1 до 3
-        neweMail.fillLetterAndSend("dollar_region@mail.ru", thema);
-        neweMail.openIncomingMail(thema.toString());
+        newMail.inputLogin(login);           //вводим логин
+        newMail.pressGoToPass();             // переходим к вводу пароля
+        newMail.inputPass(password);         //вводим пароль
+        newMail.loginAfterAll();             //авторизация после ввода логина и пароля
+        newMail.letterCreate();              //нажимаем кнопку создания письма
 
-        System.out.println("Тест завершён.");
+        newMail.fillLetterAndSend(receiver, thema, letterInput); //создание нового письма
+        System.out.println("давайте посмотрим, что мы выводим:  " + thema);
+
+        newMail.openIncomingMail(thema.toString()); //открываем полученное письмо в каталоге входящей почты
+
+
+        System.out.println("Тест завершён."); //выводим в консоль завершение теста
     }
 }

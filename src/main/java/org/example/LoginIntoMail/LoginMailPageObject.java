@@ -7,8 +7,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertTrue;
+
 public class LoginMailPageObject extends Base {
     public WebDriver driver;
+
 
     //WebDriverWait wait = new WebDriverWait(driver, 30);
     public LoginMailPageObject(WebDriver driver) {
@@ -86,7 +92,7 @@ public class LoginMailPageObject extends Base {
     private WebElement incomingMail;
 
     /** Раскрытие "Письма себе" */
-    @FindBy(xpath = "//span[co;ntains(text(),'Письма себе')]")
+    @FindBy(xpath = "//span[contains(text(),'Письма себе')]")
     private WebElement incomingMailForSelf;
 
     /** Локатор полученного письма */
@@ -136,8 +142,8 @@ public class LoginMailPageObject extends Base {
     public void letterCreate(){
             click(letterCreateButton);
     }
-    /** начинаем писать письмо */
-    public void fillLetterAndSend (String receiver, String thema) {
+    /** Пишем новое письмо: задаем получателя, тему письма и тело письма, отправляем */
+    public void fillLetterAndSend (String receiver, String thema, String letterInput) {
        //проверяем, что перед нами окно с нужными полями
         if (waitVisibilityOfElement(letterTo) & waitVisibilityOfElement(letterThemes)) {
             if (letterTo.getAttribute("value") == "") {
@@ -145,28 +151,34 @@ public class LoginMailPageObject extends Base {
                 setText(letterTo, receiver);
                 setText(letterThemes, thema);
                 click(letterBody);
-                setText(letterBody, "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!");
+                setText(letterBody, letterInput);
                 click(letterSend);
             } else System.out.println("Открыто точно не новое письмо");
         }
     }
 
-    /** переходим в каталог входящей почты и проверяем наличие письма */
+    /** переходим в каталог входящей почты и открываем полученное письмо */
     public void openIncomingMail(String thema){
         if (waitVisibilityOfElement(incomingMail)&waitVisibilityOfElement(letterCreateButton)) {
-           // click(incomingMail);
-        }
-        //if (waitVisibilityOfElement(incomingMailForSelf)) {
-        //    click(incomingMailForSelf);
-        //}
-
-        if (incomingMailSended. getText() == thema) {
-            click(driver.findElement(By.xpath("//*[text()[contains(.,'" +thema + "')]]")));
+            click(incomingMail);
+            //click(incomingMailForSelf);
+            click(incomingMailSended.findElement(By.xpath("//*[text()[contains(.,'" +thema + "')]]")));
+            //click(this.driver.findElement(By.xpath("//*[text()[contains(.,'" +thema + "')]]")));
             System.out.println("успешно выбрано полученное письмо");
-
-        }
+        }else
         System.out.println("Не получилось открыть полученное письмо");
+
     }
+
+    /**В пакете находим attachmentInfo/url и проверяем корректность ссылки")
+     * пытемся сделать сверку текста
+     */
+
+    public void assertLetterBody(){
+        assertTrue("Сравниваем значения полей",letterBody.getText()== "111");
+
+    } ;
+
 
 
 
