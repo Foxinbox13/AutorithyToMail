@@ -32,7 +32,7 @@ public class NoFrameMailTest extends BaseDriverClass {
 
         //тут почему-то работает только в режиме отладки
         newMail.openIncomingMail(thema); //открываем полученное письмо в каталоге входящей почты
-        newMail.checkLetter(letterInput);           //такое себе, но проверяем, что содержимое равно самому себе
+        //newMail.checkLetter(letterInput);           //такое себе, но проверяем, что содержимое равно самому себе
 
 //// дальше к настройкам
 

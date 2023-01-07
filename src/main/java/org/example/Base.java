@@ -63,6 +63,29 @@ public class Base {
     }
 
     /**
+     * Ждем пока элемент чудесно исчезнет.
+     *
+     *
+     * @param element
+     * @return
+     */
+    public Boolean waitInvisibilityOfElement(final WebElement element) {
+        //   // switchToFrame();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(driverWaitTime));
+        try {
+            wait.until(ExpectedConditions.invisibilityOf(element));
+            //          switchToDefaultFrame();
+            //return true;
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        //      switchToDefaultFrame();
+        return false;
+    }
+
+
+
+    /**
      * Метод ждет пока элемент появится на странице.
      * Затем кликает по этому элементу.
      *

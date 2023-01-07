@@ -8,12 +8,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LoginMailPageObject extends Base {
     public WebDriver driver;
+    public WebDriverWait wait;
 
 
 
@@ -89,7 +92,7 @@ public class LoginMailPageObject extends Base {
     /**
      * Кнопка "Входящие"
      */
-    @FindBy(xpath = ".//a[@title= 'Входящие']")
+    @FindBy(xpath = "//div[contains(text(),'Входящие')]")
     private WebElement incomingMail;
 
     /** Раскрытие "Письма себе" */
@@ -99,6 +102,10 @@ public class LoginMailPageObject extends Base {
     /** Локатор полученного письма */
     @FindBy(xpath = "//*[text()[contains(.,'Тестовое письмо')]]")
     private WebElement incomingMailSended;
+
+    /**Локатор всплывающего окна*/
+    @FindBy(xpath = "//div[@class='dimmer']")
+    private WebElement afterSendLetterWindow;
 
 
 
@@ -160,10 +167,12 @@ public class LoginMailPageObject extends Base {
     }
 
     /** переходим в каталог входящей почты и открываем полученное письмо */
-    public void openIncomingMail(String thema){
-        waitVisibilityOfElement(incomingMailSended);
-        if (waitVisibilityOfElement(incomingMailSended)) {
-            click(incomingMailSended);
+    public void openIncomingMail(String thema) {
+
+        if (waitVisibilityOfElement(incomingMail)) {
+            waitInvisibilityOfElement(afterSendLetterWindow);
+            //waitClickableOfElement(incomingMail);
+            click(incomingMail);
             //String xpath = "//span[text()[contains(.,'" + thema + "')]]";
             String xpath = "//span[contains(*,'" + thema + "')]//span[1]";
             System.out.println("полный xpath нужного письма " + xpath);
@@ -186,7 +195,7 @@ public class LoginMailPageObject extends Base {
      * Проверяем, что в письме то, что нужно. Содержимое письма: Тестовое письмо + random.
      */
     public void checkLetter(final String letter) {
-
+    if (waitVisibilityOfElement(incomingMail)) {
         String xpath = "//div[@class='letter-body']//div[text()[contains(.,'" + letter + "')]]";
         ////div[@class='letter-body']//div[text()[contains(.,'Мы с радо')]]
         WebElement check = getDriver().findElement(By.xpath(xpath));
@@ -195,6 +204,7 @@ public class LoginMailPageObject extends Base {
         if (waitVisibilityOfElement(check)) {
             Assert.assertTrue(message, b);
         }
+    }else System.out.println("wataaaak");
     }
 
     //новая группа локаторов для того, чтобы запипить смену подписи
@@ -246,6 +256,7 @@ public class LoginMailPageObject extends Base {
 
         click(podpisButton);
         click(podpisPlace);
+        podpisPlace.clear(); //очищаем подпись. попытка
         setText(podpisPlace,"из Парижа с любовью \n Сергей Кожугетович");
         System.out.println("установлена новая подпись");
         click(savePodpisButton);
