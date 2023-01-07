@@ -168,20 +168,15 @@ public class LoginMailPageObject extends Base {
 
     /** переходим в каталог входящей почты и открываем полученное письмо */
     public void openIncomingMail(String thema) {
-
-        if (waitVisibilityOfElement(incomingMail)) {
             waitInvisibilityOfElement(afterSendLetterWindow);
-            //waitClickableOfElement(incomingMail);
+        if (waitVisibilityOfElement(incomingMail)) {
             click(incomingMail);
-            //String xpath = "//span[text()[contains(.,'" + thema + "')]]";
             String xpath = "//span[contains(*,'" + thema + "')]//span[1]";
-            System.out.println("полный xpath нужного письма " + xpath);
-            //WebElement check1 = getDriver().findElement(By.xpath("//span[text()[contains(.,'" + thema + "')]]"));
+            System.out.println("Полный xpath письма во входящей почте = " + xpath);
             WebElement check1 = getDriver().findElement(By.xpath(xpath));
-            waitVisibilityOfElement(check1);
             if (waitVisibilityOfElement(check1)) {
                 click(check1);
-                System.out.println("успешно выбрано полученное письмо");
+                System.out.println("Успешно выбрано полученное письмо");
             }
             //click(incomingMailSended.findElement(By.xpath("//*[text()[contains(.,'" + thema + "')]]")));
 
@@ -209,48 +204,46 @@ public class LoginMailPageObject extends Base {
 
     //новая группа локаторов для того, чтобы запипить смену подписи
     @FindBy(xpath = "//span[@class = 'button2__ico']//*[contains(@class, 'settings')]")
-    WebElement settingsButton;
+    private WebElement settingsButton;
 
     @FindBy(xpath = "//*[text()[contains(.,'Все настройки')]]")
-    WebElement allSettings;
+    private WebElement allSettings;
 
-    //@FindBy(xpath = "//div[@data-test-id ='navigation-menu-item:general' and @data-test-active='false']//a[@href = '/settings/general']/div[1]")
-    //@FindBy(xpath = "//div[contains(@class,  'Layout-mobile__tabs')]//a[@href = '/settings/general']//span[contains(text(), 'Общие')]")
+    @FindBy(xpath = "//div[contains(@class, 'ph-project-promo-close-icon__container')]")
+    private WebElement promoButton;
+
     @FindBy(xpath = "//a[@id ='general']/div[contains(@class,'navigation')]")
-    WebElement generalSettings;
+    private WebElement generalSettings;
 
     @FindBy(xpath = ".//button[@data-test-id = 'edit']")
-    WebElement podpisButton;
+    private WebElement podpisButton;
 
     @FindBy(xpath = "//h1[contains(text(), 'Редактирование подписи')]/..//div[@role = 'textbox']")
-    WebElement podpisPlace;
+    private WebElement podpisPlace;
 
     @FindBy(xpath = "//button[@data-test-id = 'save' and @type = 'submit']")
-    WebElement savePodpisButton;
+    private WebElement savePodpisButton;
 
     public void settingsChange (){
         click(settingsButton);
 
+        String originalHandle = getDriver().getWindowHandle(); //запоминаем данные базовой вкладки
+        System.out.println("орига = " + originalHandle);
 
-        //тут взято из интернета
-        String originalHandle = getDriver().getWindowHandle();
-
-        //открываем на новую вкладку
-        click(allSettings);
-
-        //for (String windowHandle : getDriver().getWindowHandles()){
-        //    getDriver().switchTo().window(windowHandle);
-        //}
+        click(allSettings); //открываем на новой вкладке
 
         for(String childHandle : getDriver().getWindowHandles()){
             if (!childHandle.equals(originalHandle)){
                 getDriver().switchTo().window(childHandle);
-                System.out.println("новая вклдка = " + childHandle);
+                System.out.println("новая вкладка = " + childHandle);
             }
         }
 
-        System.out.println("орига = " + originalHandle);
-        waitVisibilityOfElement(generalSettings);
+        if (waitVisibilityOfElement(promoButton)){
+            click(promoButton);
+        }
+
+        //waitVisibilityOfElement(generalSettings);
         click(generalSettings);
 
 
@@ -260,6 +253,7 @@ public class LoginMailPageObject extends Base {
         setText(podpisPlace,"из Парижа с любовью \n Сергей Кожугетович");
         System.out.println("установлена новая подпись");
         click(savePodpisButton);
+        getDriver().switchTo().window(originalHandle);//возврат на базовую страницу
 
     }
 

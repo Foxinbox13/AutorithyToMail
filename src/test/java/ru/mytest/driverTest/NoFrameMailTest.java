@@ -15,6 +15,7 @@ public class NoFrameMailTest extends BaseDriverClass {
         String login = "dollar_region";
         String password = "flow_master";
         String thema =  "Тестовое письмо" + Math.random();
+        String themaNew = "Что-то новое" + Math.random();
         String receiver = "dollar_region@mail.ru";
         String letterInput = "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!";
 
@@ -37,6 +38,10 @@ public class NoFrameMailTest extends BaseDriverClass {
 //// дальше к настройкам
 
         newMail.settingsChange();
+        //вернулись и решили создать новое письмо
+        newMail.letterCreate();
+        newMail.fillLetterAndSend(receiver, themaNew, letterInput); //создание нового письма
+        newMail.openIncomingMail(themaNew);
 
         System.out.println("Тест завершён.");       //выводим в консоль завершение теста
     }
