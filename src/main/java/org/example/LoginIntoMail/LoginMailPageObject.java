@@ -1,19 +1,20 @@
 package org.example.LoginIntoMail;
 
 import org.example.Base;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertTrue;
-
 public class LoginMailPageObject extends Base {
     public WebDriver driver;
+
 
 
     //WebDriverWait wait = new WebDriverWait(driver, 30);
@@ -120,7 +121,8 @@ public class LoginMailPageObject extends Base {
     public void inputPass(String password) {
         if (waitVisibilityOfElement(userPassLocator)) {
             click(userPassLocator);
-            userPassLocator.sendKeys(password);
+            setText(userPassLocator,password);
+            //userPassLocator.sendKeys(password);
         }
     }
 
@@ -159,26 +161,96 @@ public class LoginMailPageObject extends Base {
 
     /** переходим в каталог входящей почты и открываем полученное письмо */
     public void openIncomingMail(String thema){
-        if (waitVisibilityOfElement(incomingMail)&waitVisibilityOfElement(letterCreateButton)) {
-            click(incomingMail);
-            //click(incomingMailForSelf);
-            click(incomingMailSended.findElement(By.xpath("//*[text()[contains(.,'" +thema + "')]]")));
-            //click(this.driver.findElement(By.xpath("//*[text()[contains(.,'" +thema + "')]]")));
-            System.out.println("успешно выбрано полученное письмо");
+        waitVisibilityOfElement(incomingMailSended);
+        if (waitVisibilityOfElement(incomingMailSended)) {
+            click(incomingMailSended);
+            //String xpath = "//span[text()[contains(.,'" + thema + "')]]";
+            String xpath = "//span[contains(*,'" + thema + "')]//span[1]";
+            System.out.println("полный xpath нужного письма " + xpath);
+            //WebElement check1 = getDriver().findElement(By.xpath("//span[text()[contains(.,'" + thema + "')]]"));
+            WebElement check1 = getDriver().findElement(By.xpath(xpath));
+            waitVisibilityOfElement(check1);
+            if (waitVisibilityOfElement(check1)) {
+                click(check1);
+                System.out.println("успешно выбрано полученное письмо");
+            }
+            //click(incomingMailSended.findElement(By.xpath("//*[text()[contains(.,'" + thema + "')]]")));
+
+
         }else
         System.out.println("Не получилось открыть полученное письмо");
 
     }
 
-    /**В пакете находим attachmentInfo/url и проверяем корректность ссылки")
-     * пытемся сделать сверку текста
+    /**
+     * Проверяем, что в письме то, что нужно. Содержимое письма: Тестовое письмо + random.
      */
+    public void checkLetter(final String letter) {
 
-    public void assertLetterBody(){
-        assertTrue("Сравниваем значения полей",letterBody.getText()== "111");
+        String xpath = "//div[@class='letter-body']//div[text()[contains(.,'" + letter + "')]]";
+        ////div[@class='letter-body']//div[text()[contains(.,'Мы с радо')]]
+        WebElement check = getDriver().findElement(By.xpath(xpath));
+        final String message = "Содержимое письма: " + letter;
+        final boolean b = waitVisibilityOfElement(check);
+        if (waitVisibilityOfElement(check)) {
+            Assert.assertTrue(message, b);
+        }
+    }
 
-    } ;
+    //новая группа локаторов для того, чтобы запипить смену подписи
+    @FindBy(xpath = "//span[@class = 'button2__ico']//*[contains(@class, 'settings')]")
+    WebElement settingsButton;
 
+    @FindBy(xpath = "//*[text()[contains(.,'Все настройки')]]")
+    WebElement allSettings;
+
+    //@FindBy(xpath = "//div[@data-test-id ='navigation-menu-item:general' and @data-test-active='false']//a[@href = '/settings/general']/div[1]")
+    //@FindBy(xpath = "//div[contains(@class,  'Layout-mobile__tabs')]//a[@href = '/settings/general']//span[contains(text(), 'Общие')]")
+    @FindBy(xpath = "//a[@id ='general']/div[contains(@class,'navigation')]")
+    WebElement generalSettings;
+
+    @FindBy(xpath = ".//button[@data-test-id = 'edit']")
+    WebElement podpisButton;
+
+    @FindBy(xpath = "//h1[contains(text(), 'Редактирование подписи')]/..//div[@role = 'textbox']")
+    WebElement podpisPlace;
+
+    @FindBy(xpath = "//button[@data-test-id = 'save' and @type = 'submit']")
+    WebElement savePodpisButton;
+
+    public void settingsChange (){
+        click(settingsButton);
+
+
+        //тут взято из интернета
+        String originalHandle = getDriver().getWindowHandle();
+
+        //открываем на новую вкладку
+        click(allSettings);
+
+        //for (String windowHandle : getDriver().getWindowHandles()){
+        //    getDriver().switchTo().window(windowHandle);
+        //}
+
+        for(String childHandle : getDriver().getWindowHandles()){
+            if (!childHandle.equals(originalHandle)){
+                getDriver().switchTo().window(childHandle);
+                System.out.println("новая вклдка = " + childHandle);
+            }
+        }
+
+        System.out.println("орига = " + originalHandle);
+        waitVisibilityOfElement(generalSettings);
+        click(generalSettings);
+
+
+        click(podpisButton);
+        click(podpisPlace);
+        setText(podpisPlace,"из Парижа с любовью \n Сергей Кожугетович");
+        System.out.println("установлена новая подпись");
+        click(savePodpisButton);
+
+    }
 
 
 

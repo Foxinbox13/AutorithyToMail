@@ -9,6 +9,9 @@ public class NoFrameMailTest extends BaseDriverClass {
 
     @Test
     public void baseTest(){
+
+        driver.manage().window().maximize();
+
         String login = "dollar_region";
         String password = "flow_master";
         String thema =  "Тестовое письмо" + Math.random();
@@ -19,7 +22,7 @@ public class NoFrameMailTest extends BaseDriverClass {
         LoginMailPageObject newMail = new LoginMailPageObject(driver);
 
         newMail.inputLogin(login);           //вводим логин
-        newMail.pressGoToPass();             // переходим к вводу пароля
+        newMail.pressGoToPass();             //переходим к вводу пароля
         newMail.inputPass(password);         //вводим пароль
         newMail.loginAfterAll();             //авторизация после ввода логина и пароля
         newMail.letterCreate();              //нажимаем кнопку создания письма
@@ -27,9 +30,14 @@ public class NoFrameMailTest extends BaseDriverClass {
         newMail.fillLetterAndSend(receiver, thema, letterInput); //создание нового письма
         System.out.println("давайте посмотрим, что мы выводим:  " + thema);
 
-        newMail.openIncomingMail(thema.toString()); //открываем полученное письмо в каталоге входящей почты
+        //тут почему-то работает только в режиме отладки
+        newMail.openIncomingMail(thema); //открываем полученное письмо в каталоге входящей почты
+        newMail.checkLetter(letterInput);           //такое себе, но проверяем, что содержимое равно самому себе
 
+//// дальше к настройкам
 
-        System.out.println("Тест завершён."); //выводим в консоль завершение теста
+        newMail.settingsChange();
+
+        System.out.println("Тест завершён.");       //выводим в консоль завершение теста
     }
 }
