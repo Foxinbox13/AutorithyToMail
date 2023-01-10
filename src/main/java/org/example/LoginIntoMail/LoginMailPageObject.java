@@ -2,10 +2,7 @@ package org.example.LoginIntoMail;
 
 import org.example.Base;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WindowType;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -156,7 +153,7 @@ public class LoginMailPageObject extends Base {
        //проверяем, что перед нами окно с нужными полями
         if (waitVisibilityOfElement(letterTo) & waitVisibilityOfElement(letterThemes)) {
             if (letterTo.getAttribute("value") == "") {
-                System.out.println("Открыта модалка нового письма");
+                System.out.println("Открыта модалка создания нового письма");
                 setText(letterTo, receiver);
                 setText(letterThemes, thema);
                 click(letterBody);
@@ -194,11 +191,9 @@ public class LoginMailPageObject extends Base {
         String xpath = "//div[@class='letter-body']//div[text()[contains(.,'" + letter + "')]]";
         ////div[@class='letter-body']//div[text()[contains(.,'Мы с радо')]]
         WebElement check = getDriver().findElement(By.xpath(xpath));
-        final String message = "Содержимое письма: " + letter;
         final boolean b = waitVisibilityOfElement(check);
-        if (waitVisibilityOfElement(check)) {
-            Assert.assertTrue(message, b);
-        }
+        Assert.assertTrue("Открыто не то письмо, однако", b);
+
     }else System.out.println("wataaaak");
     }
 
@@ -251,13 +246,38 @@ public class LoginMailPageObject extends Base {
         click(podpisPlace);
         podpisPlace.clear(); //очищаем подпись. попытка
         setText(podpisPlace,"из Парижа с любовью \n Сергей Кожугетович");
-        System.out.println("установлена новая подпись");
+        System.out.println("Успешно установлена новая подпись");
         click(savePodpisButton);
         getDriver().switchTo().window(originalHandle);//возврат на базовую страницу
 
     }
 
+    @FindBy(xpath = "//div[@class ='sidebar sidebar_closed']//div[contains(text(),'Входящие')]")
+    WebElement backToincomingMail;
 
+    public void openIncomingMailPath() {
+        click(backToincomingMail);
+    }
+
+    public void findAndDeleteLetter(String thema, String themaNew){
+        String xpath1 = "//a[.//span[contains(*,'" + thema + "')]//span[1]]//div[@class='checkbox__box']";
+        System.out.println("Полный xpath письма во входящей почте = " + xpath1);
+        WebElement check1 = getDriver().findElement(By.xpath(xpath1));
+
+        String xpath2 = "//span[contains(*,'" + themaNew + "')]//span[1]";
+        System.out.println("Полный xpath письма во входящей почте = " + xpath2);
+        WebElement check2 = getDriver().findElement(By.xpath(xpath2));
+
+        check1.click();
+        check2.click();
+
+        WebElement delete = getDriver().findElement(By.xpath("//div[contains(@class, 'button') and text()='Удалить']"));
+        delete.click();
+        //JavascriptExecutor js = (JavascriptExecutor) getDriver();
+        //js.executeScript("document.getElementBy Id('idElement').setAttribute('class','className')");
+
+
+    }
 
 
 

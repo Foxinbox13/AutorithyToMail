@@ -35,13 +35,17 @@ public class NoFrameMailTest extends BaseDriverClass {
         newMail.openIncomingMail(thema); //открываем полученное письмо в каталоге входящей почты
         //newMail.checkLetter(letterInput);           //такое себе, но проверяем, что содержимое равно самому себе
 
-//// дальше к настройкам
+    //// дальше к настройкам
 
         newMail.settingsChange();
         //вернулись и решили создать новое письмо
         newMail.letterCreate();
         newMail.fillLetterAndSend(receiver, themaNew, letterInput); //создание нового письма
         newMail.openIncomingMail(themaNew);
+        //newMail.checkLetter(letterInput);
+
+        newMail.openIncomingMailPath();
+        newMail.findAndDeleteLetter(thema, themaNew);
 
         System.out.println("Тест завершён.");       //выводим в консоль завершение теста
     }
