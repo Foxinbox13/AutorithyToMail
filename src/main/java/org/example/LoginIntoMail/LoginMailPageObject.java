@@ -2,14 +2,13 @@ package org.example.LoginIntoMail;
 
 import org.example.Base;
 import org.junit.Assert;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class LoginMailPageObject extends Base {
     public WebDriver driver;
@@ -260,21 +259,28 @@ public class LoginMailPageObject extends Base {
     }
 
     public void findAndDeleteLetter(String thema, String themaNew){
-        String xpath1 = "//a[.//span[contains(*,'" + thema + "')]//span[1]]//div[@class='checkbox__box']";
-        System.out.println("Полный xpath письма во входящей почте = " + xpath1);
-        WebElement check1 = getDriver().findElement(By.xpath(xpath1));
+       // String xpath1 = "//a[.//span[contains(*,'" + thema + "')]//span[1]]//div[@class='checkbox__box']";
+       // System.out.println("Полный xpath письма во входящей почте = " + xpath1);
+       // WebElement check1 = getDriver().findElement(By.xpath(xpath1));
 
-        String xpath2 = "//span[contains(*,'" + themaNew + "')]//span[1]";
-        System.out.println("Полный xpath письма во входящей почте = " + xpath2);
-        WebElement check2 = getDriver().findElement(By.xpath(xpath2));
 
-        check1.click();
-        check2.click();
+        //String xpath2 = "//span[contains(*,'" + themaNew + "')]//span[1]";
+        // System.out.println("Полный xpath письма во входящей почте = " + xpath2);
+        // WebElement check2 = getDriver().findElement(By.xpath(xpath2));
+
+        JavascriptExecutor js = (JavascriptExecutor) getDriver();
+        js.executeScript("document.getElementsByClassName('checkbox__box')[0].setAttribute('class','checkbox__box checkbox__box_checked')");
+
+        String buttonCheckPath ="//a[.//span[contains(*,'" + thema + "')]//span[1]]//button//div[@class='checkbox']";
+        WebElement buttonCheckBox = getDriver().findElement(By.xpath(buttonCheckPath));
+
+        //на будущее
+        String buttonCheckPathSecond ="//a[.//span[contains(*,'" + themaNew + "')]//span[1]]//button//div[@class='checkbox']";
 
         WebElement delete = getDriver().findElement(By.xpath("//div[contains(@class, 'button') and text()='Удалить']"));
         delete.click();
-        //JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        //js.executeScript("document.getElementBy Id('idElement').setAttribute('class','className')");
+
+
 
 
     }
