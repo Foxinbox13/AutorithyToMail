@@ -10,37 +10,35 @@ public class NoFrameMailTest extends BaseDriverClass {
     @Test
     public void baseTest(){
 
-        driver.manage().window().maximize();
-
-        String login = "dollar_region";
-        String password = "flow_master";
-        String thema =  "Тестовое письмо" + Math.random();
-        String themaNew = "Что-то новое" + Math.random();
-        String receiver = "dollar_region@mail.ru";
-        String letterInput = "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!";
+        final String login = "dollar_region";
+        final String password = "flow_master";
+        final String thema =  "Тестовое письмо" + Math.random();
+        final String themaNew = "Что-то новое" + Math.random();
+        final String receiver = "dollar_region@mail.ru";
+        final String letterInput = "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!";
 
         driver.get("https://account.mail.ru/login/");
+        driver.manage().window().maximize();
+
         LoginMailPageObject newMail = new LoginMailPageObject(driver);
 
         newMail.inputLogin(login);           //вводим логин
-        newMail.pressGoToPass();             //переходим к вводу пароля
+        newMail.goToEnterPass();             //переходим к вводу пароля
         newMail.inputPass(password);         //вводим пароль
         newMail.loginAfterAll();             //авторизация после ввода логина и пароля
+
         newMail.letterCreate();              //нажимаем кнопку создания письма
-
         newMail.fillLetterAndSend(receiver, thema, letterInput); //создание нового письма
-        System.out.println("давайте посмотрим, что мы выводим:  " + thema);
+        System.out.println("Давайте посмотрим на титул первого письма  " + thema);
 
-        //тут почему-то работает только в режиме отладки
         newMail.openIncomingMail(thema); //открываем полученное письмо в каталоге входящей почты
-        //newMail.checkLetter(letterInput);           //такое себе, но проверяем, что содержимое равно самому себе
+        //тут почему-то работает только в режиме отладки
+        newMail.checkLetter(letterInput);           //такое себе, но проверяем, что содержимое равно самому себе
 
-    //// дальше к настройкам
-
-        newMail.settingsChange();
-        //вернулись и решили создать новое письмо
-        newMail.letterCreate();
+        newMail.settingsChange();             //редактирование подписи
+        newMail.letterCreate();               //вернулись и решили создать новое письмо
         newMail.fillLetterAndSend(receiver, themaNew, letterInput); //создание нового письма
+        System.out.println("Давайте посмотрим на титул второго письма  " + themaNew);
         newMail.openIncomingMail(themaNew);
         //newMail.checkLetter(letterInput);
 

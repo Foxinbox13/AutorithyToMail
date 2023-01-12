@@ -18,7 +18,7 @@ public class ExampleTest extends  BaseDriverClass{
         //mailRu.frameSearch();
 
         mailRu.inputLogin("dollar_region");
-        mailRu.pressGoToPass();
+        mailRu.goToEnterPass();
         mailRu.inputPass("flow_master");
         mailRu.loginAfterAll();
 

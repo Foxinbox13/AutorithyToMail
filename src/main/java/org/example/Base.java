@@ -63,23 +63,19 @@ public class Base {
     }
 
     /**
-     * Ждем пока элемент чудесно исчезнет.
+     * Ждем пока элемент чудесным образом исчезнет.
      *
      *
      * @param element
      * @return
      */
     public Boolean waitInvisibilityOfElement(final WebElement element) {
-        //   // switchToFrame();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(driverWaitTime));
         try {
             wait.until(ExpectedConditions.invisibilityOf(element));
-            //          switchToDefaultFrame();
-            //return true;
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
-        //      switchToDefaultFrame();
         return false;
     }
 
@@ -92,14 +88,8 @@ public class Base {
      * @param webElement
      */
     public void click(final WebElement webElement) {
-        //c.sleep(2);
         waitVisibilityOfElement(webElement);
-     /*   Random r = new Random();
-        index = r.nextInt(sec);
-        //      // switchToFrame();
-        c.sleep(index);*/
         webElement.click();
-        //    switchToDefaultFrame();
     }
 
     /**
