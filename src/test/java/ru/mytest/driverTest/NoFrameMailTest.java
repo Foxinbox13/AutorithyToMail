@@ -46,7 +46,7 @@ public class NoFrameMailTest extends BaseDriverClass {
         newMail.checkPodpis(letterPodpis); //проверка подписи: подумать на тему вывода в консоль результата сверки
 
         newMail.openIncomingMailPath();
-        //newMail.findAndDeleteLetter(thema, themaNew);
+        newMail.findAndDeleteLetter(thema, themaNew);
 
         System.out.println("Тест завершён.");       //выводим в консоль завершение теста
     }

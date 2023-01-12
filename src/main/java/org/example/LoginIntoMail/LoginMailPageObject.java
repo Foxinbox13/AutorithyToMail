@@ -260,8 +260,10 @@ public class LoginMailPageObject extends Base {
         // System.out.println("Полный xpath письма во входящей почте = " + xpath2);
         // WebElement check2 = getDriver().findElement(By.xpath(xpath2));
 
-        WebElement govninaEtotVashJS = driver.findElement(By.xpath("//input[@class='checkbox__input']/.."));
+        //WebElement govninaEtotVashJS = driver.findElement(By.xpath("//input[@class='checkbox__input']/.."));
 
+
+        //данный скрипт меняет только признак маркировки, сам элемент не выбран
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript("document.getElementsByClassName('checkbox__box')[0].setAttribute('class','checkbox__box checkbox__box_checked')");
 
