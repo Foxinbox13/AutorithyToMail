@@ -144,15 +144,16 @@ public class LoginMailPageObject extends Base {
     }
 
     @Step("Переходим в каталог входящей почты и открываем полученное ранее письмо")
-    public void openIncomingMail(String thema) {
+    public void openIncomingMail(String incomingLetters) {
             waitInvisibilityOfElement(afterSendLetterWindow);
-        if (waitVisibilityOfElement(incomingMail)) {
-            click(incomingMail);
-            String xpath = "//span[contains(*,'" + thema + "')]//span[1]";
+        if (waitVisibilityOfElement(backToincomingMail)) {
+           // click(incomingMail);
+            click(backToincomingMail);
+            String xpath = "//span[contains(*,'" + incomingLetters + "')]//span[1]";
             System.out.println("Полный xpath письма во входящей почте = " + xpath);
-            WebElement check1 = getDriver().findElement(By.xpath(xpath));
-            if (waitVisibilityOfElement(check1)) {
-                click(check1);
+            WebElement titleCheck = getDriver().findElement(By.xpath(xpath));
+            if (waitVisibilityOfElement(titleCheck)) {
+                click(titleCheck);
                 System.out.println("Успешно открыто полученное письмо");
             }
         }else
@@ -174,6 +175,16 @@ public class LoginMailPageObject extends Base {
         System.out.println("Проверил: это то самое письмо");
 
     }else System.out.println("wtf dude?");
+    }
+
+    @FindBy(xpath = "//div[@data-signature-widget = 'content']")
+    private WebElement podpisIntoLetter;
+
+    public void checkPodpis(String textPopdisi){
+        if (waitVisibilityOfElement(podpisIntoLetter)){
+            Assert.assertEquals("Ошибка: подписи отлчичаются",podpisIntoLetter.getText(),textPopdisi);
+            System.out.println("Подпись в письме проверена");
+        }
     }
 
                         //новая группа локаторов для того, чтобы запипить смену подписи
@@ -199,7 +210,7 @@ public class LoginMailPageObject extends Base {
     private WebElement savePodpisButton;
 
     @Step("Смена подписи в настройках")
-    public void settingsChange (){
+    public void settingsChange (String newPodpis){
         click(settingsButton);
         String originalHandle = getDriver().getWindowHandle(); //запоминаем данные базовой вкладки
         System.out.println("орига = " + originalHandle);
@@ -221,7 +232,7 @@ public class LoginMailPageObject extends Base {
         click(podpisButton);
         click(podpisPlace);
         podpisPlace.clear(); //очищаем подпись
-        setText(podpisPlace,"из Парижа с любовью \n Сергей Кожугетович");
+        setText(podpisPlace,newPodpis);
         System.out.println("Успешно установлена новая подпись");
         click(savePodpisButton);
         getDriver().switchTo().window(originalHandle);//возврат на базовую страницу
@@ -235,6 +246,7 @@ public class LoginMailPageObject extends Base {
     @Step("Метод осуществляет переход в каталогу Входящей почты")
     public void openIncomingMailPath() {
         click(backToincomingMail);
+        System.out.println("Выполнен переход к разделу входящей почты");
     }
 
     @Step("Метод ищет полученные письма и удаляет их")
@@ -247,6 +259,8 @@ public class LoginMailPageObject extends Base {
         //String xpath2 = "//span[contains(*,'" + themaNew + "')]//span[1]";
         // System.out.println("Полный xpath письма во входящей почте = " + xpath2);
         // WebElement check2 = getDriver().findElement(By.xpath(xpath2));
+
+        WebElement govninaEtotVashJS = driver.findElement(By.xpath("//input[@class='checkbox__input']/.."));
 
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript("document.getElementsByClassName('checkbox__box')[0].setAttribute('class','checkbox__box checkbox__box_checked')");

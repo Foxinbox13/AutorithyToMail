@@ -1,6 +1,5 @@
 package ru.mytest.driverTest;
 
-import com.beust.jcommander.Parameter;
 import org.example.LoginIntoMail.LoginMailPageObject;
 import org.junit.Test;
 import ru.mytest.BaseDriverClass;
@@ -12,10 +11,11 @@ public class NoFrameMailTest extends BaseDriverClass {
 
         final String login = "dollar_region";
         final String password = "flow_master";
-        final String thema =  "Тестовое письмо" + Math.random();
-        final String themaNew = "Что-то новое" + Math.random();
+        final String thema =  "Первое письмо" + Math.random();
+        final String themaNew = "Второе письмо" + Math.random();
         final String receiver = "dollar_region@mail.ru";
         final String letterInput = "Мы с радостью приглашаем Вас на данное мероприятие. Хвала Одину!";
+        final String letterPodpis = "из Парижа с любовью \n Сергей Кожугетович";
 
         driver.get("https://account.mail.ru/login/");
         driver.manage().window().maximize();
@@ -35,15 +35,18 @@ public class NoFrameMailTest extends BaseDriverClass {
         //тут почему-то работает только в режиме отладки
         newMail.checkLetter(letterInput);           //такое себе, но проверяем, что содержимое равно самому себе
 
-        newMail.settingsChange();             //редактирование подписи
+        newMail.settingsChange(letterPodpis);             //редактирование подписи
         newMail.letterCreate();               //вернулись и решили создать новое письмо
         newMail.fillLetterAndSend(receiver, themaNew, letterInput); //создание нового письма
         System.out.println("Давайте посмотрим на титул второго письма  " + themaNew);
         newMail.openIncomingMail(themaNew);
-        //newMail.checkLetter(letterInput);
+        newMail.checkLetter(letterInput);
+
+
+        newMail.checkPodpis(letterPodpis); //проверка подписи: подумать на тему вывода в консоль результата сверки
 
         newMail.openIncomingMailPath();
-        newMail.findAndDeleteLetter(thema, themaNew);
+        //newMail.findAndDeleteLetter(thema, themaNew);
 
         System.out.println("Тест завершён.");       //выводим в консоль завершение теста
     }
