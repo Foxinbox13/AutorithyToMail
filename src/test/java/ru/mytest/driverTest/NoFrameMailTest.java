@@ -47,6 +47,7 @@ public class NoFrameMailTest extends BaseDriverClass {
 
         newMail.openIncomingMailPath();
         newMail.findAndDeleteLetter(thema, themaNew);
+        newMail.checkLettersAfterDelete(thema, themaNew);
 
         System.out.println("Тест завершён.");       //выводим в консоль завершение теста
     }

@@ -3,10 +3,7 @@ package org.example.LoginIntoMail;
 import io.qameta.allure.Step;
 import org.example.Base;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -22,13 +19,6 @@ public class LoginMailPageObject extends Base {
 
     @FindBy(xpath = ".//*[@class = 'ph-login svelte-1hiqrvn']")
     private WebElement enterButtonLogin;
-
-   // @FindBy(xpath = ".//*[@class = 'base-0-2-25 h3-0-2-29']")
-   // private WebElement enterMenu;
-
-   // @FindBy(xpath = "//iframe[@class='iframe-0-2-16']")
-   // private WebElement frameAuth;
-
 
     /** Поиск локатора для поля ввода логина **/
     @FindBy(xpath = ".//*[@class = 'input-0-2-77']")
@@ -70,23 +60,40 @@ public class LoginMailPageObject extends Base {
     @FindBy(xpath = ".//button[@class= 'vkuiButton vkuiButton--size-l vkuiButton--mode-primary vkuiButton--appearance-accent vkuiButton--align-center vkuiButton--sizeY-none vkuiButton--android vkuiTappable vkuiTappable--sizeX-none vkuiTappable--hover-none vkuiTappable--hasActive vkuiTappable--mouse']")
     private WebElement letterSend;
 
-    /** Локатор кнопки для перехода во "Входящие"    */
-    @FindBy(xpath = "//div[contains(text(),'Входящие')]")
-    private WebElement incomingMail;
-
-    /** Раскрытие "Письма себе" */
-    @FindBy(xpath = "//span[contains(text(),'Письма себе')]")
-    private WebElement incomingMailForSelf;
-
-    /** Локатор полученного письма */
-    @FindBy(xpath = "//*[text()[contains(.,'Тестовое письмо')]]")
-    private WebElement incomingMailSended;
-
     /** Локатор всплывающего окна */
     @FindBy(xpath = "//div[@class='dimmer']")
     private WebElement afterSendLetterWindow;
 
+    @FindBy(xpath = "//div[@class ='sidebar sidebar_closed']//div[contains(text(),'Входящие')]")
+    WebElement backToincomingMail;
 
+    @FindBy(xpath = "//div[@class = 'letter-list__react']")
+    WebElement letterList;
+
+    @FindBy(xpath = "//div[@data-signature-widget = 'content']")
+    private WebElement podpisIntoLetter;
+
+    //новая группа локаторов для того, чтобы запипить смену подписи
+    @FindBy(xpath = "//span[@class = 'button2__ico']//*[contains(@class, 'settings')]")
+    private WebElement settingsButton;
+
+    @FindBy(xpath = "//*[text()[contains(.,'Все настройки')]]")
+    private WebElement allSettings;
+
+    @FindBy(xpath = "//div[contains(@class, 'ph-project-promo-close-icon__container')]")
+    private WebElement promoButton;
+
+    @FindBy(xpath = "//a[@id ='general']/div[contains(@class,'navigation')]")
+    private WebElement generalSettings;
+
+    @FindBy(xpath = ".//button[@data-test-id = 'edit']")
+    private WebElement podpisButton;
+
+    @FindBy(xpath = "//h1[contains(text(), 'Редактирование подписи')]/..//div[@role = 'textbox']")
+    private WebElement podpisPlace;
+
+    @FindBy(xpath = "//button[@data-test-id = 'save' and @type = 'submit']")
+    private WebElement savePodpisButton;
 
 
     @Step("Метод нажатия кнопки для открытия модального окна для последующего ввода логина и пароля")
@@ -143,21 +150,26 @@ public class LoginMailPageObject extends Base {
         }
     }
 
+
+
     @Step("Переходим в каталог входящей почты и открываем полученное ранее письмо")
     public void openIncomingMail(String incomingLetters) {
             waitInvisibilityOfElement(afterSendLetterWindow);
         if (waitVisibilityOfElement(backToincomingMail)) {
-           // click(incomingMail);
+            // click(incomingMail);
             click(backToincomingMail);
-            String xpath = "//span[contains(*,'" + incomingLetters + "')]//span[1]";
-            System.out.println("Полный xpath письма во входящей почте = " + xpath);
-            WebElement titleCheck = getDriver().findElement(By.xpath(xpath));
-            if (waitVisibilityOfElement(titleCheck)) {
-                click(titleCheck);
-                System.out.println("Успешно открыто полученное письмо");
-            }
-        }else
-        System.out.println("Не получилось открыть полученное письмо");
+            if (waitVisibilityOfElement(letterList)) {
+                //waitVisibilityOfElement(backToincomingMail);
+                String xpath = "//span[contains(*,'" + incomingLetters + "')]//span[1]";
+                System.out.println("Полный xpath письма во входящей почте = " + xpath);
+                WebElement titleCheck = getDriver().findElement(By.xpath(xpath));
+                if (waitVisibilityOfElement(titleCheck)) {
+                    click(titleCheck);
+                    System.out.println("Успешно открыто полученное письмо");
+                }
+            } else
+                System.out.println("Не получилось открыть полученное письмо");
+        }
 
     }
     @Step("Проверяем, что содержимое письма соответствует тому, что было отправлено")
@@ -177,9 +189,8 @@ public class LoginMailPageObject extends Base {
     }else System.out.println("wtf dude?");
     }
 
-    @FindBy(xpath = "//div[@data-signature-widget = 'content']")
-    private WebElement podpisIntoLetter;
 
+    @Step("Метод проверки сравнения подписи в письме с новозаданной подписью")
     public void checkPodpis(String textPopdisi){
         if (waitVisibilityOfElement(podpisIntoLetter)){
             Assert.assertEquals("Ошибка: подписи отлчичаются",podpisIntoLetter.getText(),textPopdisi);
@@ -187,27 +198,6 @@ public class LoginMailPageObject extends Base {
         }
     }
 
-                        //новая группа локаторов для того, чтобы запипить смену подписи
-    @FindBy(xpath = "//span[@class = 'button2__ico']//*[contains(@class, 'settings')]")
-    private WebElement settingsButton;
-
-    @FindBy(xpath = "//*[text()[contains(.,'Все настройки')]]")
-    private WebElement allSettings;
-
-    @FindBy(xpath = "//div[contains(@class, 'ph-project-promo-close-icon__container')]")
-    private WebElement promoButton;
-
-    @FindBy(xpath = "//a[@id ='general']/div[contains(@class,'navigation')]")
-    private WebElement generalSettings;
-
-    @FindBy(xpath = ".//button[@data-test-id = 'edit']")
-    private WebElement podpisButton;
-
-    @FindBy(xpath = "//h1[contains(text(), 'Редактирование подписи')]/..//div[@role = 'textbox']")
-    private WebElement podpisPlace;
-
-    @FindBy(xpath = "//button[@data-test-id = 'save' and @type = 'submit']")
-    private WebElement savePodpisButton;
 
     @Step("Смена подписи в настройках")
     public void settingsChange (String newPodpis){
@@ -239,10 +229,6 @@ public class LoginMailPageObject extends Base {
 
     }
 
-    @FindBy(xpath = "//div[@class ='sidebar sidebar_closed']//div[contains(text(),'Входящие')]")
-    WebElement backToincomingMail;
-
-    //возможно, возможно, что стоит заменить элемент incomingMail на этот
     @Step("Метод осуществляет переход в каталогу Входящей почты")
     public void openIncomingMailPath() {
         click(backToincomingMail);
@@ -250,34 +236,55 @@ public class LoginMailPageObject extends Base {
     }
 
     @Step("Метод ищет полученные письма и удаляет их")
-    public void findAndDeleteLetter(String thema, String themaNew){
-       // String xpath1 = "//a[.//span[contains(*,'" + thema + "')]//span[1]]//div[@class='checkbox__box']";
-       // System.out.println("Полный xpath письма во входящей почте = " + xpath1);
-       // WebElement check1 = getDriver().findElement(By.xpath(xpath1));
+    public void findAndDeleteLetter(String themaFirst, String themaSecond){
+        if (waitVisibilityOfElement(letterList)) {
+            //выбор конкретных двух последних писем
+            JavascriptExecutor js = (JavascriptExecutor) getDriver();
+            js.executeScript("document.getElementsByClassName('checkbox__input')[0].click()");
+            js.executeScript("document.getElementsByClassName('checkbox__input')[1].click()");
 
-
-        //String xpath2 = "//span[contains(*,'" + themaNew + "')]//span[1]";
-        // System.out.println("Полный xpath письма во входящей почте = " + xpath2);
-        // WebElement check2 = getDriver().findElement(By.xpath(xpath2));
-
-        //WebElement govninaEtotVashJS = driver.findElement(By.xpath("//input[@class='checkbox__input']/.."));
-
-
-        //данный скрипт меняет только признак маркировки, сам элемент не выбран
+            //Перепишем на xpath
+        /*WebElement firstLetterXpath = getDriver().findElement(By.xpath("//a[.//span[contains(*,'" + themaFirst + "')]//span[1]]//input[@class='checkbox__input']"));
+        WebElement secondLetterXpath = getDriver().findElement(By.xpath("//a[.//span[contains(*,'" + themaSecond + "')]//span[1]]//input[@class='checkbox__input']"));
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        js.executeScript("document.getElementsByClassName('checkbox__box')[0].setAttribute('class','checkbox__box checkbox__box_checked')");
+        js.executeScript("click()", firstLetterXpath);
+        js.executeScript("click()", secondLetterXpath);*/
 
-        String buttonCheckPath ="//a[.//span[contains(*,'" + thema + "')]//span[1]]//button//div[@class='checkbox']";
-        WebElement buttonCheckBox = getDriver().findElement(By.xpath(buttonCheckPath));
+            WebElement deleteButton = getDriver().findElement(By.xpath("//div[contains(@class, 'button') and text()='Удалить']"));
+            deleteButton.click();
+        }
+    }
 
-        //на будущее
-        String buttonCheckPathSecond ="//a[.//span[contains(*,'" + themaNew + "')]//span[1]]//button//div[@class='checkbox']";
+    @Step("Метод проверяет, что в списке нет писем, которые были удалены")
+    public void checkLettersAfterDelete(String letter1, String letter2){
 
-        WebElement delete = getDriver().findElement(By.xpath("//div[contains(@class, 'button') and text()='Удалить']"));
-        delete.click();
+        String xpathLetter1 = "//div[@class='letter-body']//div[text()[contains(.,'" + letter1 + "')]]";
+        String xpathLetter2 = "//div[@class='letter-body']//div[text()[contains(.,'" + letter2 + "')]]";
+        System.out.println("xpathLetter1 = " + xpathLetter1);
+        System.out.println("xpathLetter2 = " + xpathLetter2);
 
+        try {
+            WebElement checkExistLetter1 = getDriver().findElement(By.xpath(xpathLetter1));
+        }catch (NoSuchElementException e){
+            System.out.println("Письмо, отправленное ПЕРВЫМ, успешно удалено");
+        }
 
+        try {
+            WebElement checkExistLetter2 = getDriver().findElement(By.xpath(xpathLetter1));
+        }catch (NoSuchElementException e){
+            System.out.println("Письмо, отправленное ВТОРЫМ, успешно удалено");
+        }
 
+       // WebElement checkExistLetter1 = getDriver().findElement(By.xpath(xpathLetter1));
+       // WebElement checkExistletter2 = getDriver().findElement(By.xpath(xpathLetter2));
+
+        /*Assert.assertTrue("Письмо, отправленное ПЕРВЫМ, успешно удалено", getDriver().findElement(By.xpath(xpathLetter1)).isDisplayed());
+        Assert.assertTrue("Письмо, отправленное ВТОРЫМ, успешно удалено", getDriver().findElement(By.xpath(xpathLetter2)).isDisplayed());
+        System.out.println("Проверили: письма удалены");*/
+
+        /*if (getDriver().findElement(By.xpath(xpathLetter1)).isDisplayed()){
+            System.out.println("Письмо, отправленное ПЕРВЫМ, успешно удалено");
+        }*/
 
     }
 
